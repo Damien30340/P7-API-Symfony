@@ -52,6 +52,12 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "reset": [
+            "symfony console doctrine:database:drop --if-exists --force",
+            "symfony console doctrine:database:create",
+            "symfony console doctrine:migrations:migrate",
+            "symfony console doctrine:fixtures:load --append"
+        ],
         "post-install-cmd": [
             "@auto-scripts"
         ],
@@ -67,5 +73,8 @@
             "allow-contrib": false,
             "require": "5.3.*"
         }
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4"
     }
 }
