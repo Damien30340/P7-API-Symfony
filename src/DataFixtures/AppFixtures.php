@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Phone;
+use App\Entity\Picture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -48,10 +49,15 @@ class AppFixtures extends Fixture
     {
         for($i = 0;$i < count(self::PHONELIBEL); $i++){
             $phone = (new Phone())
-                ->setLibel(self::PHONELIBEL[$i])
+                ->setName(self::PHONELIBEL[$i])
                 ->setDescription(self::PHONEDESCRIPTION[$i])
                 ->setPrice(self::PHONEPRICE[$i]);
 
+            $picture = (new Picture())
+                ->setFilename('https://fakeimg.pl/300/')
+                ->setPhone($phone);
+
+            $manager->persist($picture);
             $manager->persist($phone);
         }
 

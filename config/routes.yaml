@@ -1,3 +1,9 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+phone_list:
+    path: /api/v1/phone/list
+    controller: App\Controller\PhoneController::list
+    methods: GET|HEAD
+
+phone_details:
+    path: /api/v1/phone/{id}
+    controller: App\Controller\PhoneController::phoneDetails
+    methods: GET|HEAD
