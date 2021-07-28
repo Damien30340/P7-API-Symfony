@@ -40,10 +40,15 @@ class Phone
 
     /**
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="phone", cascade={"persist", "remove"})
-     * @Groups({"list"})
+     * @Groups({"list", "details"})
      * @var Collection<int, Picture>
      */
     private $picture;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="phones", cascade={"persist", "remove"})
+     */
+    private ?Brand $Brand;
 
     public function __construct()
     {
@@ -117,6 +122,18 @@ class Phone
                 $picture->setPhone(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->Brand;
+    }
+
+    public function setBrand(?Brand $Brand): self
+    {
+        $this->Brand = $Brand;
 
         return $this;
     }

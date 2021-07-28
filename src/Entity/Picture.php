@@ -20,7 +20,7 @@ class Picture
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"list"})
+     * @Groups({"list", "details"})
      */
     private ?string $filename;
 
