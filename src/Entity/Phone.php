@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PhoneRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -20,34 +22,47 @@ class Phone
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"list"})
+     * @Groups({"list", "details"})
      */
-    private ?string $libel;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"details"})
      */
     private ?string $description;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"list"})
+     * @Groups({"list", "details"})
      */
     private ?float $price;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="phone", cascade={"persist", "remove"})
+     * @Groups({"list"})
+     * @var Collection<int, Picture>
+     */
+    private $picture;
+
+    public function __construct()
+    {
+        $this->picture = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLibel(): ?string
+    public function getName(): ?string
     {
-        return $this->libel;
+        return $this->name;
     }
 
-    public function setLibel(string $libel): self
+    public function setName(string $name): self
     {
-        $this->libel = $libel;
+        $this->name = $name;
 
         return $this;
     }
@@ -72,6 +87,36 @@ class Phone
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Picture[]
+     */
+    public function getPicture(): Collection
+    {
+        return $this->picture;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->picture->contains($picture)) {
+            $this->picture[] = $picture;
+            $picture->setPhone($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->picture->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getPhone() === $this) {
+                $picture->setPhone(null);
+            }
+        }
 
         return $this;
     }
