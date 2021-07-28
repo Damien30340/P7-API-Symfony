@@ -2,12 +2,14 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Brand;
 use App\Entity\Phone;
 use App\Entity\Picture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements DependentFixtureInterface
 {
     public const PHONELIBEL = [
         'Galaxy S6',
@@ -47,20 +49,34 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        for($i = 0;$i < count(self::PHONELIBEL); $i++){
-            $phone = (new Phone())
-                ->setName(self::PHONELIBEL[$i])
-                ->setDescription(self::PHONEDESCRIPTION[$i])
-                ->setPrice(self::PHONEPRICE[$i]);
-
+        foreach(self::PHONELIBEL as $index => $data){
             $picture = (new Picture())
-                ->setFilename('https://fakeimg.pl/300/')
-                ->setPhone($phone);
+            ->setFilename('https://fakeimg.pl/300/');
 
-            $manager->persist($picture);
+            $phone = (new Phone())
+                ->setName(self::PHONELIBEL[$index])
+                ->setDescription(self::PHONEDESCRIPTION[$index])
+                ->setPrice(self::PHONEPRICE[$index])
+                ->addPicture($picture);
+
+            if($index < 4 ){
+                $phone->setBrand($this->getReference('brand_0'));
+            } elseif($index > 3 && $index < 7){
+                $phone->setBrand($this->getReference('brand_1'));
+            } else {
+                $phone->setBrand($this->getReference('brand_2'));
+            }
+
             $manager->persist($phone);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            BrandFixtures::class,
+        ];
     }
 }
