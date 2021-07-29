@@ -20,8 +20,14 @@ class PhoneController extends AbstractController
     {
         $phoneList = $phoneRepository->findAll();
 
+        $list = [];
+
+        foreach ($phoneList as $index => $phone){
+            array_push($list, [$phone->getBrand(), $phone]);
+        }
+
         return $this->json([
-            'phoneList' => $phoneList
+            'PhoneList' => $list
         ], 200, [], [
             'groups' => ['list']
         ]);
@@ -35,8 +41,10 @@ class PhoneController extends AbstractController
     public function phoneDetails($id, PhoneRepository $phoneRepository): Response
     {
         $phone = $phoneRepository->findOneBy(['id' => $id]);
+        $brand = $phone->getBrand();
 
         return $this->json([
+            'brand' => $brand,
             'phone' => $phone
         ], 200, [], [
             'groups' => ['details']
