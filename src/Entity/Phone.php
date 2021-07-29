@@ -47,6 +47,7 @@ class Phone
 
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="phones", cascade={"persist", "remove"})
+     * @group({"list", "details"})
      */
     private ?Brand $Brand;
 
