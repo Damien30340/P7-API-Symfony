@@ -1,14 +1,13 @@
 <?php
 
 
-namespace App\Services;
+namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 
 class Manager
 {
-    private EntityManagerInterface $em;
-
+    private ?EntityManagerInterface $em;
     public function __construct(EntityManagerInterface $manager)
     {
         $this->em = $manager;

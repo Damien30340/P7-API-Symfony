@@ -2,19 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Services\Manager;
+use App\Service\EncoderJson;
+use App\Service\Manager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+
 
 class UserController extends AbstractController
 {
+
     private Manager $manager;
 
     public function __construct(Manager $manager)
@@ -25,7 +23,6 @@ class UserController extends AbstractController
     public function list(UserRepository $userRepository): Response
     {
         $userList = $userRepository->findAll();
-
         return $this->json([
             'userList' => $userList,
         ], 200, [], [
@@ -36,7 +33,6 @@ class UserController extends AbstractController
     public function details($id, UserRepository $userRepository): Response
     {
         $user = $userRepository->findOneBy(['id'=> $id]);
-
         return $this->json([
             'user' => $user,
         ], 200, [], [
@@ -44,31 +40,30 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function add(Request $request): Response
+    public function add(EncoderJson $encoderJson, Request $request): Response
     {
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
+        $user = $encoderJson->decodeUserAdd($request->getContent());
 
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $data = $request->getContent();
-
-        $user = $serializer->deserialize($data, User::class, 'json');
-
-        $this->manager->update($user);
+        $user !== null ? $this->manager->update($user) : $user = "User not created !";
 
         return $this->json([
             "user" => $user
-        ], 201);
+        ], 201, [],
+        [
+            'groups' => 'details'
+        ]);
     }
 
-    public function edit($id, UserRepository $userRepository, Request $request): Response
+    public function edit($id, UserRepository $userRepository, EncoderJson $encoderJson, Request $request): Response
     {
         $user = $userRepository->findOneBy(['id' => $id]);
+        $encoderJson->decodeUserUpdate($request->getContent(), $user);
+
+        $user !== null ? $this->manager->update($user) : $user = "User not found !";
 
         return $this->json([
             "user" => $user
-        ], 200, [], [
+        ], 201, [], [
             'groups' => ['details']
         ]);
     }
