@@ -14,12 +14,27 @@ class Manager
     }
 
     public function update($obj){
-        $this->em->persist($obj);
-        $this->em->flush();
+        if($obj != null){
+            $this->em->persist($obj);
+            $this->em->flush();
+
+            return $obj;
+        } else {
+            return "Erreur : type object = null";
+        }
     }
 
     public function delete($obj){
-        $this->em->remove($obj);
-        $this->em->flush();
+        if($obj != null){
+            $this->em->remove($obj);
+            $this->em->flush();
+
+            return "Object delete";
+        } else
+        {
+            return "Erreur : type object = null";
+        }
+
+
     }
 }
