@@ -43,11 +43,9 @@ class UserController extends AbstractController
     public function add(EncoderJson $encoderJson, Request $request): Response
     {
         $user = $encoderJson->decodeUserAdd($request->getContent());
-
-        $user !== null ? $this->manager->update($user) : $user = "User not created !";
-
+        $user = $this->manager->update($user);
         return $this->json([
-            "user" => $user
+            "response" => $user
         ], 201, [],
         [
             'groups' => 'details'
@@ -58,13 +56,19 @@ class UserController extends AbstractController
     {
         $user = $userRepository->findOneBy(['id' => $id]);
         $encoderJson->decodeUserUpdate($request->getContent(), $user);
-
-        $user !== null ? $this->manager->update($user) : $user = "User not found !";
-
+        $user = $this->manager->update($user);
         return $this->json([
             "user" => $user
         ], 201, [], [
             'groups' => ['details']
         ]);
+    }
+
+    public function remove($id, UserRepository $userRepository){
+        $user = $userRepository->findOneBy(['id' => $id]);
+        $user = $this->manager->delete($user);
+        return $this->json([
+            "response" => $user
+        ], 204, []);
     }
 }

@@ -27,3 +27,10 @@ user_edit:
     path: /api/v1/user/edit/{id}
     controller: App\Controller\UserController::edit
     methods: POST
+
+user_remove:
+    path: /api/v1/user/remove/{id}
+    controller: App\Controller\UserController::remove
+    methods: DELETE
+
+

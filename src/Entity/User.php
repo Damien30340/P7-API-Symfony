@@ -56,7 +56,7 @@ class User
     private ?string $phoneNumber;
 
     /**
-     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist", "remove"})
      * @var Collection<int, Address>
      * @Groups("details")
      */
