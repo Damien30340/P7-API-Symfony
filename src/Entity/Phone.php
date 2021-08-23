@@ -47,9 +47,9 @@ class Phone
 
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="phones", cascade={"persist", "remove"})
-     * @group({"list", "details"})
+     * @Groups({"list", "details"})
      */
-    private ?Brand $Brand;
+    private $brand;
 
     public function __construct()
     {
@@ -127,14 +127,14 @@ class Phone
         return $this;
     }
 
-    public function getBrand(): ?Brand
+    public function getBrand()
     {
-        return $this->Brand;
+        return $this->brand;
     }
 
-    public function setBrand(?Brand $Brand): self
+    public function setBrand($brand): self
     {
-        $this->Brand = $Brand;
+        $this->brand = $brand;
 
         return $this;
     }

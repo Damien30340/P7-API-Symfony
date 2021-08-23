@@ -5,10 +5,11 @@ namespace App\DataFixtures;
 use App\Entity\Address;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -28,10 +29,18 @@ class UserFixtures extends Fixture
                 ->setPhoneNumber($faker->phoneNumber())
                 ->setMail($faker->email())
                 ->setPassword($faker->password(4, 9))
+                ->setClient($this->getReference('client_' . rand(0, 5)))
                 ->addAddress($address);
 
             $manager->persist($user);
         }
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ClientFixtures::class,
+        ];
     }
 }

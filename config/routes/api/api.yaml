@@ -1,0 +1,54 @@
+api_login_check:
+  path: /login_check
+
+phone_list:
+  path: /phone
+  controller: App\Controller\PhoneController::list
+  methods: GET|HEAD
+
+phone_details:
+  path: /phone/{id}
+  controller: App\Controller\PhoneController::details
+  methods: GET|HEAD
+
+user_list:
+  path: /user
+  controller: App\Controller\UserController::list
+  methods: GET|HEAD
+
+user_details:
+  path: /user/{id}
+  controller: App\Controller\UserController::details
+  methods: GET|HEAD
+
+user_add:
+  path: /user
+  controller: App\Controller\UserController::add
+  methods: POST
+
+user_edit:
+  path: /user/{id}
+  controller: App\Controller\UserController::edit
+  methods: PUT
+
+user_remove:
+  path: /user/{id}
+  controller: App\Controller\UserController::remove
+  methods: DELETE
+
+address_add:
+  path: /user/{id}/address
+  controller: App\Controller\AddressController::add
+  methods: POST
+
+address_edit:
+    path: /user/{id}/address
+    controller: App\Controller\AddressController::edit
+    methods: PUT
+
+address_remove:
+  path: /user/{id}/address
+  controller: App\Controller\AddressController::remove
+  methods: DELETE
+
+

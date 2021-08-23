@@ -2,51 +2,46 @@
 
 namespace App\Controller;
 
+use App\Entity\Phone;
 use App\Repository\PhoneRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class PhoneController
  * @package App\Controller
  */
+#[Route(path: '/api/v1')]
 class PhoneController extends AbstractController
 {
     /**
      * @param PhoneRepository $phoneRepository
-     * @return Response
+     * @return JsonResponse
      */
-    public function list(PhoneRepository $phoneRepository): Response
+    #[Route(path: '/phone', name: 'list_phone', methods: 'GET')]
+    // TODO à paginer
+    public function list(PhoneRepository $phoneRepository): JsonResponse
     {
         $phoneList = $phoneRepository->findAll();
 
-        $list = [];
-
-
-        foreach ($phoneList as $index => $phone){
-            array_push($list, ['brand' => $phone->getBrand(), $phone]);
-        }
-
         return $this->json([
-            'PhoneList' => $list
+            'PhoneList' => $phoneList,
         ], 200, [], [
             'groups' => ['list']
         ]);
     }
 
-    /**
-     * @param $id
-     * @param PhoneRepository $phoneRepository
-     * @return Response
-     */
-    public function details($id, PhoneRepository $phoneRepository): Response
-    {
-        $phone = $phoneRepository->findOneBy(['id' => $id]);
-        $brand = $phone->getBrand();
 
+    /**
+     * @param Phone $phone
+     * @return JsonResponse
+     */
+    #[Route(path: '/phone/{id}', name: 'details_phone', methods: 'GET')]
+    public function details(Phone $phone): JsonResponse
+    {
         return $this->json([
-            'brand' => $brand,
-            'phone' => $phone
+            'phone' => $phone,
         ], 200, [], [
             'groups' => ['details']
         ]);

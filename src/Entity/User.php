@@ -62,6 +62,11 @@ class User
      */
     private $address;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users", cascade={"persist"})
+     */
+    private ?Client $client;
+
     public function __construct()
     {
         $this->address = new ArrayCollection();
@@ -170,6 +175,18 @@ class User
                 $address->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

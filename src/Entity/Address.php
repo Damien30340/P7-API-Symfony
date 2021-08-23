@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
  */
+//TODO à faire sur toutes les entités = une interface ou abstract afin de limiter les conditions de null
 class Address
 {
     /**

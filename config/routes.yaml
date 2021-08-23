@@ -1,36 +1,6 @@
-phone_list:
-    path: /api/v1/phone/list
-    controller: App\Controller\PhoneController::list
-    methods: GET|HEAD
+api_login_check:
+  path: /api/v1/login_check
 
-phone_details:
-    path: /api/v1/phone/{id}
-    controller: App\Controller\PhoneController::details
-    methods: GET|HEAD
-
-user_list:
-    path: /api/v1/user/list
-    controller: App\Controller\UserController::list
-    methods: GET|HEAD
-
-user_details:
-    path: /api/v1/user/{id}
-    controller: App\Controller\UserController::details
-    methods: GET|HEAD
-
-user_add:
-    path: /api/v1/user/add
-    controller: App\Controller\UserController::add
-    methods: POST
-
-user_edit:
-    path: /api/v1/user/edit/{id}
-    controller: App\Controller\UserController::edit
-    methods: POST
-
-user_remove:
-    path: /api/v1/user/remove/{id}
-    controller: App\Controller\UserController::remove
-    methods: DELETE
-
-
+#api_route_file:
+#    resource: './routes/api/api.yaml'
+#    prefix: '/api/v1'

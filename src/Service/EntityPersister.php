@@ -5,7 +5,7 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class Manager
+class EntityPersister
 {
     private ?EntityManagerInterface $em;
     public function __construct(EntityManagerInterface $manager)
