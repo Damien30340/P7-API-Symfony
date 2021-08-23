@@ -2,37 +2,53 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\EncoderJson;
-use App\Service\Manager;
+use App\Service\RequestDecoder;
+use App\Service\EntityPersister;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
-
+#[Route(path: '/api/v1')]
 class UserController extends AbstractController
 {
 
-    private Manager $manager;
+    private EntityPersister $entityPersister;
+    private RequestDecoder $requestDecoder;
 
-    public function __construct(Manager $manager)
+
+    public function __construct(EntityPersister $entityPersister, RequestDecoder $requestDecoder)
     {
-        $this->manager = $manager;
+        $this->entityPersister = $entityPersister;
+        $this->requestDecoder = $requestDecoder;
     }
 
-    public function list(UserRepository $userRepository): Response
+    /**
+     * @param UserRepository $userRepository
+     * @return JsonResponse
+     */
+    #[Route(path: '/users', name: 'list_user', methods: 'GET')]
+    // TODO Mettre en place une pagination
+    public function list(UserRepository $userRepository)
     {
-        $userList = $userRepository->findAll();
+        $users = $userRepository->findBy(['client' => $this->getUser()]);
+
         return $this->json([
-            'userList' => $userList,
+            'users' => $users,
         ], 200, [], [
             'groups' => ['list']
         ]);
     }
 
-    public function details($id, UserRepository $userRepository): Response
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    #[Route(path: '/user/{id}', name: 'details_user', methods: 'GET')]
+    // TODO Add voter
+    public function details(User $user): JsonResponse
     {
-        $user = $userRepository->findOneBy(['id'=> $id]);
         return $this->json([
             'user' => $user,
         ], 200, [], [
@@ -40,23 +56,32 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function add(EncoderJson $encoderJson, Request $request): Response
+    /**
+     * @param void
+     * @return JsonResponse
+     */
+    #[Route(path: '/user', name: 'add_user', methods: 'POST')]
+    public function add(): JsonResponse
     {
-        $user = $encoderJson->decodeUserAdd($request->getContent());
-        $user = $this->manager->update($user);
+        $user = $this->requestDecoder->createUser($this->getUser());
+        $this->entityPersister->update($user);
         return $this->json([
-            "response" => $user
+            "user" => $user
         ], 201, [],
-        [
-            'groups' => 'details'
-        ]);
+            [
+                'groups' => 'details'
+            ]);
     }
 
-    public function edit($id, UserRepository $userRepository, EncoderJson $encoderJson, Request $request): Response
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    #[Route(path: '/user/{id}', name: 'edit_user', methods: 'PUT')]
+    public function edit(User $user): JsonResponse
     {
-        $user = $userRepository->findOneBy(['id' => $id]);
-        $encoderJson->decodeUserUpdate($request->getContent(), $user);
-        $user = $this->manager->update($user);
+        $this->requestDecoder->updateUser($user);
+        $this->entityPersister->update($user);
         return $this->json([
             "user" => $user
         ], 201, [], [
@@ -64,9 +89,14 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function remove($id, UserRepository $userRepository){
-        $user = $userRepository->findOneBy(['id' => $id]);
-        $user = $this->manager->delete($user);
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    #[Route(path: '/user/{id}', name: 'remove_user', methods: 'DELETE')]
+    public function remove(User $user)
+    {
+        $user = $this->entityPersister->delete($user);
         return $this->json([
             "response" => $user
         ], 204, []);

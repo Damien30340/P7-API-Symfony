@@ -1,0 +1,29 @@
+security:
+    enable_authenticator_manager: true
+    password_hashers:
+        App\Entity\Client:
+            algorithm: auto
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Client
+                property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        login:
+            pattern: ^/api/v1/login
+            stateless: true
+            json_login:
+                check_path: /api/v1/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api/v1
+            stateless: true
+            jwt: ~
+    access_control:
+        - { path: ^/api/v1/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1,       roles: IS_AUTHENTICATED_FULLY }
+
