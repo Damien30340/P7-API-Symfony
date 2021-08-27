@@ -27,6 +27,9 @@ services:
     Lexik\Bundle\JWTAuthenticationBundle\Event\JWTDecodedEvent:
         autowire: true
 
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: jsonException }
 #        arguments: [ '@request_stack' ]
 #        tags:
 #            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }

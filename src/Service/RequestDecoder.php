@@ -79,7 +79,12 @@ class RequestDecoder
             ->setCountry($decodedAddress->getCountry());
     }
 
-    public function decodeRequestTo(string $classname){
+    /**
+     * @param string $classname
+     * @return mixed
+     */
+    public function decodeRequestTo(string $classname): mixed
+    {
         return $this->serializer->deserialize($this->request->getContent(), $classname, "json");
     }
 }

@@ -6,17 +6,59 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @Hateoas\Relation(
+ *     name = "self",
+ *     href = @Hateoas\Route(
+ *         "user_show",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"show": "GET"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
+ * * @Hateoas\Relation(
+ *     name = "create",
+ *     href = @Hateoas\Route(
+ *         "user_create",
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"create": "POST"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
+ * @Hateoas\Relation(
+ *     name = "update",
+ *     href = @Hateoas\Route(
+ *         "user_update",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"update": "PUT"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
+ * * @Hateoas\Relation(
+ *     name = "delete",
+ *     href = @Hateoas\Route(
+ *         "user_delete",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"delete": "DELETE"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
  */
-class User
+class User extends AbstractEntity
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"list", "details"})
      */
     private ?int $id;
 
@@ -51,14 +93,14 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups("details")
+     * @Groups({"details"})
      */
     private ?string $phoneNumber;
 
     /**
      * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist", "remove"})
      * @var Collection<int, Address>
-     * @Groups("details")
+     * @Groups({"details"})
      */
     private $address;
 

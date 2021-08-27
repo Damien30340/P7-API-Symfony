@@ -4,13 +4,43 @@ namespace App\Entity;
 
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
+ * @Hateoas\Relation(
+ *     name = "create",
+ *     href = @Hateoas\Route(
+ *         "address_create",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"create": "POST"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * ),
+ * @Hateoas\Relation(
+ *     name = "update",
+ *     href = @Hateoas\Route(
+ *         "address_update",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true,
+ *     ),
+ *     attributes={"actions":{"update": "PUT"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * ),
+ * @Hateoas\Relation(
+ *     name = "delete",
+ *     href = @Hateoas\Route(
+ *         "address_update",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true,
+ *     ),
+ *     attributes={"actions":{"delete": "DELETE"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
  */
-//TODO à faire sur toutes les entités = une interface ou abstract afin de limiter les conditions de null
-class Address
+class Address extends AbstractEntity
 {
     /**
      * @ORM\Id

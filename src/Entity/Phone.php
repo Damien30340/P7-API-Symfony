@@ -6,12 +6,23 @@ use App\Repository\PhoneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PhoneRepository::class)
+ * @Hateoas\Relation(
+ *     name = "self",
+ *     href = @Hateoas\Route(
+ *         "phone_show",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true,
+ *     ),
+ *     attributes={"actions":{"show": "GET"}},
+ *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ * )
  */
-class Phone
+class Phone extends AbstractEntity
 {
     /**
      * @ORM\Id
