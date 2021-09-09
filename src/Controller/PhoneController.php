@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Phone;
 use App\Repository\PhoneRepository;
+use App\Service\RequestEncoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,21 +16,23 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api/v1')]
 class PhoneController extends AbstractController
 {
+    private RequestEncoder $requestEncoder;
+
+    public function __construct(RequestEncoder $requestEncoder)
+    {
+        $this->requestEncoder = $requestEncoder;
+    }
+
     /**
      * @param PhoneRepository $phoneRepository
      * @return JsonResponse
      */
-    #[Route(path: '/phone', name: 'list_phone', methods: 'GET')]
+    #[Route(path: '/phone', name: 'phones', methods: 'GET')]
     // TODO à paginer
     public function list(PhoneRepository $phoneRepository): JsonResponse
     {
-        $phoneList = $phoneRepository->findAll();
-
-        return $this->json([
-            'PhoneList' => $phoneList,
-        ], 200, [], [
-            'groups' => ['list']
-        ]);
+        $jsonData = $this->requestEncoder->encodeArray("list", $phoneRepository->findAll());
+        return new JsonResponse($jsonData, 200, [], true);
     }
 
 
@@ -37,13 +40,10 @@ class PhoneController extends AbstractController
      * @param Phone $phone
      * @return JsonResponse
      */
-    #[Route(path: '/phone/{id}', name: 'details_phone', methods: 'GET')]
-    public function details(Phone $phone): JsonResponse
+    #[Route(path: '/phone/{id}', name: 'phone_show', methods: 'GET')]
+    public function show(Phone $phone): JsonResponse
     {
-        return $this->json([
-            'phone' => $phone,
-        ], 200, [], [
-            'groups' => ['details']
-        ]);
+        $jsonData = $this->requestEncoder->encodeEntity("details", $phone);
+        return new JsonResponse($jsonData, 200, [], true);
     }
 }
