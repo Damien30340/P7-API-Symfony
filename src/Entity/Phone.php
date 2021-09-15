@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation\Groups;
  *         absolute = true,
  *     ),
  *     attributes={"actions":{"show": "GET"}},
- *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ *     exclusion = @Hateoas\Exclusion(groups = {"details", "list"})
  * )
  */
 class Phone extends AbstractEntity

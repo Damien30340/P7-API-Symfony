@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    display_users_limit : 10
+    display_phone_limit: 10
+    display_client_limit: 10
 
 services:
     # default configuration for services in *this* file
@@ -30,9 +33,3 @@ services:
     App\EventListener\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: jsonException }
-#        arguments: [ '@request_stack' ]
-#        tags:
-#            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
-#    App\Listener\UserListener:
-#        tags:
-#            - { name: 'doctrine.orm.entity_listener', event: 'prePersist', entity: 'App\Entity\User', method: 'prePersist'}

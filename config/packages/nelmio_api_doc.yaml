@@ -1,0 +1,48 @@
+nelmio_api_doc:
+
+    models:
+        names:
+            - {alias: Client, type: App\Entity\Client, groups: [register]}
+
+    documentation:
+        info:
+            title: BilemoApp
+            description: This is an awesome app!
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - Bearer: [ ]
+        paths:
+            /api/v1/login_check:
+                post:
+                    summary: "Allow customer to authenticate to api and obtain token / refresh token"
+
+                    tags:
+                        - Global
+
+                    requestBody:
+                        description: Optional description in Markdown
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/Client'
+
+                    responses:
+                        500:
+                            description: "Internal server authentication"
+                        401:
+                            description: "Invalid credentials"
+                        200:
+                            description: "Login success"
+
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api/v1/(?!/doc$) # Accepts routes under /api except /api/doc
+

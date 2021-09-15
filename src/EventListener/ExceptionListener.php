@@ -9,14 +9,17 @@ class ExceptionListener
 {
     public function jsonException(ExceptionEvent $event)
     {
-        $exception = $event->getThrowable()->getMessage();
-        //TODO Voir avec Seb (doc Symfony pourquoi set après response)
-        $response = new JsonResponse([
-            'message' => $exception,
-            'code' => 400
-        ], 400);
+        $exception = $event->getThrowable();
 
-        $response->setStatusCode(400);
+        $statusCode = method_exists($exception, 'getStatusCode')?$exception->getStatusCode():$exception->getCode();
+        $message = $event->getThrowable()->getMessage();
+        if($statusCode === 0) $statusCode = 500;
+
+        $response = new JsonResponse([
+            'message' => $message,
+            'code' => $statusCode
+        ], $statusCode);
+
         $event->setResponse($response);
     }
 }

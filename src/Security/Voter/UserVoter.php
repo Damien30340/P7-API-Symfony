@@ -10,9 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserVoter extends Voter
 {
-    const USER_UPDATE = 'user_edit';
     const USER_VIEW = 'user_view';
-    const USER_DELETE = 'user_delete';
 
     /**
      * @param string $attribute
@@ -21,8 +19,8 @@ class UserVoter extends Voter
      */
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, [self::USER_UPDATE, self::USER_VIEW, self::USER_DELETE])
-            && $subject instanceof \App\Entity\User;
+        return $attribute === self::USER_VIEW
+            && $subject instanceof User;
     }
 
     /**
@@ -40,30 +38,11 @@ class UserVoter extends Voter
         }
 
         // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case self::USER_UPDATE:
-                return $this->canUpdate($client, $subject);
-                break;
-            case self::USER_VIEW:
-                return $this->canView($client, $subject);
-                break;
-            case self::USER_DELETE:
-                return $this->canDelete($client, $subject);
-                break;
-        }
+        return match ($attribute) {
+            self::USER_VIEW => $this->canView($client, $subject),
+            default => false,
+        };
 
-        return false;
-    }
-
-    /**
-     * @param UserInterface|Client $client
-     * @param User $user
-     * @return bool
-     */
-    private function canUpdate(UserInterface|Client $client, User $user): bool
-    {
-        if($user->getClient()->getId() === $client->getId()) return true;
-        return false;
     }
 
     /**
@@ -76,15 +55,11 @@ class UserVoter extends Voter
         if($user->getClient()->getId() === $client->getId()) return true;
         return false;
     }
+//    private function canUpdate(): bool
+//    {
+//    }
 
-    /**
-     * @param UserInterface|Client $client
-     * @param User $user
-     * @return bool
-     */
-    private function canDelete(UserInterface|Client $client, User $user): bool
-    {
-        if($user->getClient()->getId() === $client->getId()) return true;
-        return false;
-    }
+//    private function canDelete(): bool
+//    {
+//    }
 }

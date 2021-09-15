@@ -6,7 +6,10 @@ use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -18,44 +21,56 @@ class Client implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Exclude()
      */
     private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(description="The name of connexion")
+     * @Groups({"register"})
      */
     private ?string $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"register"})
+     * @Exclude()
      */
     private ?string $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"register"})
      */
-    private $password;
+    private ?string $password;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"register"})
+     * @Exclude()
      */
     private ?int $siren;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"register"})
+     * @Exclude()
      */
     private ?string $phoneNumber;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="client", cascade={"persist", "remove"})
      * @var Collection<int, User>
+     * @Exclude()
      */
     private $users;
 
     /**
      * @ORM\Column(type="json")
+     * @Exclude()
      */
-    private $roles = [];
+    private ?array $roles = [];
 
     public function __construct()
     {

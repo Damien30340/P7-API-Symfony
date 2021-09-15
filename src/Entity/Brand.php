@@ -6,6 +6,7 @@ use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 
 /**
@@ -29,6 +30,7 @@ class Brand extends AbstractEntity
     /**
      * @ORM\OneToMany(targetEntity=Phone::class, mappedBy="Brand")
      * @var Collection<int, Phone>
+     * @Serializer\Exclude()
      */
     private $phones;
 

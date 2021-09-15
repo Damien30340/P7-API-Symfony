@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -20,7 +22,7 @@ use JMS\Serializer\Annotation\Groups;
  *         absolute = true,
  *     ),
  *     attributes={"actions":{"show": "GET"}},
- *     exclusion = @Hateoas\Exclusion(groups = {"details"})
+ *     exclusion = @Hateoas\Exclusion(groups = {"details", "list"})
  * )
  * * @Hateoas\Relation(
  *     name = "create",
@@ -65,35 +67,66 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"list", "details"})
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 20,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
      */
     private ?string $nickName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"details"})
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 20,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
      */
     private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"details"})
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 20,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
      */
     private ?string $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "details"})
+     * @Assert\NotBlank()
+     * @Assert\Email(
+     *     message = "L'adresse email '{{ value }}' n'est pas un email valide."
+     * )
      */
     private ?string $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"hidden"})
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     * "/^(?=.*[A-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@])(?!.*[iIoO])\S{6,20}$/",
+     * message="Votre mot de passe ne répond pas aux éxigences de sécurités")
      */
     private ?string $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"details"})
+     * @Assert\NotBlank()
      */
     private ?string $phoneNumber;
 
@@ -106,6 +139,7 @@ class User extends AbstractEntity
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users", cascade={"persist"})
+     * @Serializer\Exclude()
      */
     private ?Client $client;
 
