@@ -21,7 +21,19 @@ class ClientFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        for($i = 0; $i < 6; $i++){
+        $client = new Client();
+        $client
+            ->setUsername('testApi')
+            ->setMail($faker->email())
+            ->setSiren($faker->numberBetween(111111111, 999999999))
+            ->setPhoneNumber($faker->phoneNumber())
+            ->setPassword($this->passwordEncoder->hashPassword($client, "testApi"));
+
+        $manager->persist($client);
+
+        $this->addReference('client_' . 0, $client);
+
+        for($i = 1; $i < 6; $i++){
             $client = new Client();
             $client
                 ->setUsername($faker->lastName())
