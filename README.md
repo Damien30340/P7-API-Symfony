@@ -30,3 +30,4 @@ public_key:       '%kernel.project_dir%/config/jwt/public.pem'  # required for t
 pass_phrase:      'your_secret_passphrase' # required for token creation, usage of an environment variable is recommended
 token_ttl:        3600
 ```
+For more informations on Lexik_jwt_bundle, visit : https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/index.md
