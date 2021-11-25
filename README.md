@@ -1,5 +1,7 @@
 # P7-API-Symfony
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/acd3f1b1d60d4817b9e5eca90d79bb66)](https://www.codacy.com/gh/Damien30340/P7-API-Symfony/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Damien30340/P7-API-Symfony&amp;utm_campaign=Badge_Grade)
+
 Develop Bilemo API REST
 
 ## Config
